@@ -1,6 +1,11 @@
 import os
 os.environ["PYTHONIOENCODING"] = "utf-8"
 os.environ["PYTHONUTF8"] = "1"
+os.environ["Ollama_Log_Encoding"] = "utf-8"
+import locale
+locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
+
+
 import pdfplumber
 import fitz
 from PIL import Image
