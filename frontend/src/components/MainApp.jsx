@@ -10,6 +10,8 @@ import {
   Loader2,
   CheckCircle2,
   AlertCircle,
+  Settings,
+  Bell,
 } from "lucide-react";
 
 const API_URL = "http://localhost:8000";
@@ -177,135 +179,96 @@ const MainApp = () => {
     <div
       style={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(to bottom right, #eef2ff, #f3e8ff, #fce7f3)",
+        background: "#e8dcc6",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <nav
         style={{
-          background: "#ffffff",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-          padding: "1rem 1.5rem",
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-          borderBottom: "1px solid #e5e7eb",
+          background: "#d4c5ab",
+          padding: "0.75rem 1.5rem",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "1px solid #b8a687",
         }}
       >
-        <div
-          style={{
-            maxWidth: "80rem",
-            margin: "0 auto",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <Bot size={28} style={{ color: "#6b7280" }} />
+          <h1
+            style={{
+              fontSize: "1.125rem",
+              fontWeight: 600,
+              color: "#4b5563",
+              margin: 0,
+            }}
           >
-            <div
-              style={{
-                padding: "0.5rem",
-                background: "#e0e7ff",
-                borderRadius: "0.5rem",
-              }}
-            >
-              <Bot size={28} style={{ color: "#4f46e5" }} />
-            </div>
-            <div>
-              <h1
-                style={{
-                  fontSize: "1.25rem",
-                  fontWeight: 700,
-                  color: "#111827",
-                  margin: 0,
-                }}
-              >
-                RAG Chatbot
-              </h1>
-              <p style={{ fontSize: "0.75rem", color: "#6b7280", margin: 0 }}>
-                Ask questions about your documents
-              </p>
-            </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <div style={{ textAlign: "right" }}>
-              <p
-                style={{
-                  fontSize: "0.875rem",
-                  fontWeight: 500,
-                  color: "#111827",
-                  margin: 0,
-                }}
-              >
-                {user?.username || "User"}
-              </p>
-              <p style={{ fontSize: "0.75rem", color: "#6b7280", margin: 0 }}>
-                {user?.email}
-              </p>
-            </div>
-            <button
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                padding: "0.5rem 1rem",
-                background: "#ef4444",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "0.5rem",
-                cursor: "pointer",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                transition: "all 0.2s",
-              }}
-            >
-              <LogOut size={18} />
-              <span>Logout</span>
-            </button>
-          </div>
+            Ragbot
+          </h1>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <Settings size={22} style={{ color: "#6b7280", cursor: "pointer" }} />
+          <Bell size={22} style={{ color: "#6b7280", cursor: "pointer" }} />
+          <User
+            size={28}
+            style={{
+              color: "#6b7280",
+              cursor: "pointer",
+              padding: "0.25rem",
+              borderRadius: "50%",
+              border: "2px solid #6b7280",
+            }}
+          />
         </div>
       </nav>
 
       <div
         style={{
-          maxWidth: "80rem",
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "60rem",
           margin: "0 auto",
-          padding: "1rem 1.5rem",
-          height: "calc(100vh - 6rem)",
+          width: "100%",
+          padding: "1rem",
         }}
       >
-        <div
-          style={{
-            background: "#ffffff",
-            borderRadius: "1rem",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
-          {!documentAnalyzed && (
+        {!documentAnalyzed && (
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "2rem",
+            }}
+          >
             <div
               style={{
-                padding: "1.5rem",
-                borderBottom: "1px solid #e5e7eb",
-                background: "linear-gradient(to right, #eef2ff, #f3e8ff)",
+                background: "#ffffff",
+                borderRadius: "1rem",
+                padding: "2rem",
+                width: "100%",
+                maxWidth: "35rem",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
               }}
             >
               <h2
                 style={{
-                  fontSize: "1.125rem",
+                  fontSize: "1.25rem",
                   fontWeight: 600,
-                  color: "#111827",
-                  marginBottom: "1rem",
+                  color: "#374151",
+                  marginBottom: "1.5rem",
+                  textAlign: "center",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "0.5rem",
                 }}
               >
-                <Upload size={20} style={{ color: "#4f46e5" }} />
+                <Upload size={24} style={{ color: "#6b7280" }} />
                 Upload Documents to Begin
               </h2>
 
@@ -331,12 +294,12 @@ const MainApp = () => {
 
               <div
                 style={{
-                  border: "2px dashed #c7d2fe",
+                  border: "2px dashed #d1d5db",
                   borderRadius: "0.75rem",
                   padding: "3rem",
                   textAlign: "center",
                   cursor: "pointer",
-                  background: "#ffffff",
+                  background: "#f9fafb",
                   transition: "border-color 0.2s",
                 }}
               >
@@ -361,13 +324,13 @@ const MainApp = () => {
                           width: "3rem",
                           height: "3rem",
                           margin: "0 auto 1rem",
-                          color: "#4f46e5",
+                          color: "#6b7280",
                           animation: "spin 1s linear infinite",
                         }}
                       />
                       <p
                         style={{
-                          color: "#374151",
+                          color: "#4b5563",
                           fontWeight: 500,
                           marginBottom: "0.5rem",
                         }}
@@ -389,7 +352,7 @@ const MainApp = () => {
                       />
                       <p
                         style={{
-                          color: "#374151",
+                          color: "#4b5563",
                           fontWeight: 500,
                           marginBottom: "0.5rem",
                         }}
@@ -410,7 +373,7 @@ const MainApp = () => {
                     style={{
                       fontSize: "0.875rem",
                       fontWeight: 500,
-                      color: "#374151",
+                      color: "#4b5563",
                       marginBottom: "0.5rem",
                     }}
                   >
@@ -424,8 +387,8 @@ const MainApp = () => {
                         key={idx}
                         style={{
                           padding: "0.25rem 0.75rem",
-                          background: "#e0e7ff",
-                          color: "#3730a3",
+                          background: "#d4c5ab",
+                          color: "#4b5563",
                           fontSize: "0.875rem",
                           borderRadius: "9999px",
                           display: "inline-flex",
@@ -441,211 +404,158 @@ const MainApp = () => {
                 </div>
               )}
             </div>
-          )}
+          </div>
+        )}
 
-          {documentAnalyzed && uploadedFiles.length > 0 && (
-            <div
-              style={{
-                padding: "1rem",
-                borderBottom: "1px solid #e5e7eb",
-                background: "#f9fafb",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexShrink: 0,
-              }}
-            >
+        {documentAnalyzed && (
+          <>
+            {uploadedFiles.length > 0 && (
               <div
                 style={{
+                  padding: "0.75rem 1rem",
+                  background: "#f3f4f6",
+                  borderRadius: "0.5rem",
                   display: "flex",
                   alignItems: "center",
-                  gap: "0.5rem",
-                  flexWrap: "wrap",
-                }}
-              >
-                <CheckCircle2 size={18} style={{ color: "#16a34a" }} />
-                <span
-                  style={{
-                    fontSize: "0.875rem",
-                    fontWeight: 500,
-                    color: "#374151",
-                  }}
-                >
-                  Active documents:
-                </span>
-                {uploadedFiles.map((fileName, idx) => (
-                  <span
-                    key={idx}
-                    style={{
-                      padding: "0.25rem 0.5rem",
-                      background: "#e0e7ff",
-                      color: "#3730a3",
-                      fontSize: "0.75rem",
-                      borderRadius: "9999px",
-                    }}
-                  >
-                    {fileName}
-                  </span>
-                ))}
-              </div>
-              <button
-                onClick={clearChat}
-                style={{
-                  fontSize: "0.875rem",
-                  color: "#dc2626",
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.25rem",
-                }}
-              >
-                <Trash2 size={16} />
-                Clear All
-              </button>
-            </div>
-          )}
-
-          <div style={{ flex: 1, overflowY: "auto", padding: "1.5rem" }}>
-            {messages.length === 0 && documentAnalyzed && (
-              <div
-                style={{
-                  textAlign: "center",
-                  paddingTop: "3rem",
-                  paddingBottom: "3rem",
-                }}
-              >
-                <Bot
-                  size={64}
-                  style={{
-                    width: "4rem",
-                    height: "4rem",
-                    margin: "0 auto 1rem",
-                    color: "#d1d5db",
-                  }}
-                />
-                <p style={{ color: "#6b7280", fontSize: "1.125rem" }}>
-                  Start asking questions about your documents!
-                </p>
-              </div>
-            )}
-
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: "flex",
-                  justifyContent:
-                    msg.type === "user" ? "flex-end" : "flex-start",
+                  justifyContent: "space-between",
                   marginBottom: "1rem",
                 }}
               >
                 <div
                   style={{
                     display: "flex",
-                    gap: "0.75rem",
-                    maxWidth: "48rem",
-                    flexDirection: msg.type === "user" ? "row-reverse" : "row",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <CheckCircle2 size={18} style={{ color: "#059669" }} />
+                  <span
+                    style={{
+                      fontSize: "0.875rem",
+                      fontWeight: 500,
+                      color: "#4b5563",
+                    }}
+                  >
+                    Active documents:
+                  </span>
+                  {uploadedFiles.map((fileName, idx) => (
+                    <span
+                      key={idx}
+                      style={{
+                        padding: "0.25rem 0.5rem",
+                        background: "#d4c5ab",
+                        color: "#4b5563",
+                        fontSize: "0.75rem",
+                        borderRadius: "9999px",
+                      }}
+                    >
+                      {fileName}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  onClick={clearChat}
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "#dc2626",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.25rem",
+                  }}
+                >
+                  <Trash2 size={16} />
+                  Clear All
+                </button>
+              </div>
+            )}
+
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: "1rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              {messages.length === 0 && (
+                <div
+                  style={{
+                    textAlign: "center",
+                    paddingTop: "3rem",
+                    paddingBottom: "3rem",
+                  }}
+                >
+                  <Bot
+                    size={64}
+                    style={{
+                      width: "4rem",
+                      height: "4rem",
+                      margin: "0 auto 1rem",
+                      color: "#9ca3af",
+                    }}
+                  />
+                  <p style={{ color: "#6b7280", fontSize: "1.125rem" }}>
+                    Start asking questions about your documents!
+                  </p>
+                </div>
+              )}
+
+              {messages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    justifyContent:
+                      msg.type === "user" ? "flex-end" : "flex-start",
                   }}
                 >
                   <div
                     style={{
-                      width: "2rem",
-                      height: "2rem",
-                      borderRadius: "9999px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      background: msg.type === "user" ? "#4f46e5" : "#e5e7eb",
-                      color: msg.type === "user" ? "#ffffff" : "#374151",
-                    }}
-                  >
-                    {msg.type === "user" ? (
-                      <User size={18} />
-                    ) : (
-                      <Bot size={18} />
-                    )}
-                  </div>
-                  <div
-                    style={{
+                      maxWidth: "70%",
+                      padding: "0.875rem 1rem",
                       borderRadius: "1rem",
-                      padding: "0.75rem 1rem",
                       background:
                         msg.type === "user"
-                          ? "#4f46e5"
+                          ? "#a8b5a0"
                           : msg.error
-                          ? "#fef2f2"
-                          : "#f3f4f6",
-                      color:
-                        msg.type === "user"
-                          ? "#ffffff"
-                          : msg.error
-                          ? "#7f1d1d"
-                          : "#111827",
-                      border: msg.error ? "1px solid #fecaca" : "none",
+                          ? "#f3a8a8"
+                          : "#b0c4d1",
+                      color: "#2d3748",
+                      fontSize: "0.9375rem",
+                      lineHeight: 1.5,
+                      wordWrap: "break-word",
                     }}
                   >
                     <p
                       style={{
-                        fontSize: "0.875rem",
-                        whiteSpace: "pre-wrap",
-                        lineHeight: 1.6,
                         margin: 0,
+                        whiteSpace: "pre-wrap",
                       }}
                     >
                       {msg.content}
                     </p>
-                    <p
-                      style={{
-                        fontSize: "0.75rem",
-                        marginTop: "0.5rem",
-                        opacity: 0.7,
-                        margin: "0.5rem 0 0 0",
-                      }}
-                    >
-                      {msg.timestamp.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
 
-            {isSending && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  marginBottom: "1rem",
-                }}
-              >
+              {isSending && (
                 <div
-                  style={{ display: "flex", gap: "0.75rem", maxWidth: "48rem" }}
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                  }}
                 >
                   <div
                     style={{
-                      width: "2rem",
-                      height: "2rem",
-                      borderRadius: "9999px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      background: "#e5e7eb",
-                      color: "#374151",
-                    }}
-                  >
-                    <Bot size={18} />
-                  </div>
-                  <div
-                    style={{
+                      padding: "0.875rem 1rem",
                       borderRadius: "1rem",
-                      padding: "0.75rem 1rem",
-                      background: "#f3f4f6",
+                      background: "#b0c4d1",
                     }}
                   >
                     <div style={{ display: "flex", gap: "0.25rem" }}>
@@ -653,7 +563,7 @@ const MainApp = () => {
                         style={{
                           width: "0.5rem",
                           height: "0.5rem",
-                          background: "#9ca3af",
+                          background: "#6b7280",
                           borderRadius: "9999px",
                           animation: "bounce 1s infinite",
                         }}
@@ -662,7 +572,7 @@ const MainApp = () => {
                         style={{
                           width: "0.5rem",
                           height: "0.5rem",
-                          background: "#9ca3af",
+                          background: "#6b7280",
                           borderRadius: "9999px",
                           animation: "bounce 1s infinite 0.15s",
                         }}
@@ -671,7 +581,7 @@ const MainApp = () => {
                         style={{
                           width: "0.5rem",
                           height: "0.5rem",
-                          background: "#9ca3af",
+                          background: "#6b7280",
                           borderRadius: "9999px",
                           animation: "bounce 1s infinite 0.3s",
                         }}
@@ -679,87 +589,104 @@ const MainApp = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div ref={chatEndRef} />
-          </div>
+              <div ref={chatEndRef} />
+            </div>
 
-          {documentAnalyzed && (
             <div
               style={{
-                borderTop: "1px solid #e5e7eb",
                 padding: "1rem",
                 background: "#ffffff",
-                flexShrink: 0,
+                borderRadius: "1.5rem",
+                display: "flex",
+                gap: "0.75rem",
+                alignItems: "center",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
               }}
             >
-              <div
+              <button
                 style={{
+                  padding: "0.625rem",
+                  background: "#9eb8c9",
+                  border: "none",
+                  borderRadius: "50%",
+                  cursor: "pointer",
                   display: "flex",
-                  gap: "0.5rem",
-                  alignItems: "flex-end",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <textarea
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ask a question about your documents..."
-                  style={{
-                    flex: 1,
-                    padding: "0.75rem 1rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.75rem",
-                    outline: "none",
-                    resize: "none",
-                    fontFamily: "inherit",
-                    fontSize: "0.875rem",
-                  }}
-                  rows="2"
-                  disabled={isSending}
-                />
-                <button
-                  onClick={handleSendMessage}
-                  disabled={!inputMessage.trim() || isSending}
-                  style={{
-                    padding: "0.75rem",
-                    background: "#4f46e5",
-                    color: "#ffffff",
-                    border: "none",
-                    borderRadius: "0.75rem",
-                    cursor:
-                      inputMessage.trim() && !isSending
-                        ? "pointer"
-                        : "not-allowed",
-                    opacity: !inputMessage.trim() || isSending ? 0.5 : 1,
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  {isSending ? (
-                    <Loader2
-                      size={24}
-                      style={{ animation: "spin 1s linear infinite" }}
-                    />
-                  ) : (
-                    <Send size={24} />
-                  )}
-                </button>
-              </div>
-              <p
+                <Upload size={20} style={{ color: "#374151" }} />
+              </button>
+              <button
                 style={{
-                  fontSize: "0.75rem",
-                  color: "#6b7280",
-                  marginTop: "0.5rem",
-                  margin: "0.5rem 0 0 0",
+                  padding: "0.625rem",
+                  background: "#9eb8c9",
+                  border: "none",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                Press Enter to send, Shift+Enter for new line
-              </p>
+                <FileText size={20} style={{ color: "#374151" }} />
+              </button>
+              <textarea
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Type a message..."
+                style={{
+                  flex: 1,
+                  padding: "0.625rem 1rem",
+                  border: "none",
+                  borderRadius: "1.5rem",
+                  outline: "none",
+                  resize: "none",
+                  fontFamily: "inherit",
+                  fontSize: "0.9375rem",
+                  background: "transparent",
+                  color: "#374151",
+                }}
+                rows="1"
+                disabled={isSending}
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={!inputMessage.trim() || isSending}
+                style={{
+                  padding: "0.625rem",
+                  background: "#9eb8c9",
+                  border: "none",
+                  borderRadius: "50%",
+                  cursor:
+                    inputMessage.trim() && !isSending
+                      ? "pointer"
+                      : "not-allowed",
+                  opacity: !inputMessage.trim() || isSending ? 0.5 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                }}
+              >
+                {isSending ? (
+                  <Loader2
+                    size={20}
+                    style={{
+                      color: "#374151",
+                      animation: "spin 1s linear infinite",
+                    }}
+                  />
+                ) : (
+                  <Send size={20} style={{ color: "#374151" }} />
+                )}
+              </button>
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
 
       <style>{`
