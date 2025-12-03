@@ -1,15 +1,14 @@
 
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
+# from chromadb import PersistentClient
+# from vector import client as vector_client
 
 
 from fastapi import FastAPI, UploadFile, File
-from vector import (
-    extract_text_from_pdf,
-    create_chunks,
-    store_embeddings,
-    get_collection
-)
+from vector import set_client, get_collection, extract_text_from_pdf, create_chunks, store_embeddings
+from chromadb import PersistentClient
+
 
 from rag import answer_question, summarize_document
 
@@ -32,17 +31,19 @@ app.add_middleware(
 
 @app.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
-    # Reset temp folder
     shutil.rmtree("temp", ignore_errors=True)
     os.makedirs("temp", exist_ok=True)
 
-    # 🔥 Reset chroma db completely
     shutil.rmtree("chroma_db", ignore_errors=True)
 
-    # This recreates an empty chroma DB
-    collection = get_collection()
+    # Create brand-new Chroma client
+    new_client = PersistentClient(path="chroma_db")
 
-    # Save uploaded PDF
+    # Assign to vector.py
+    set_client(new_client)
+
+    collection = new_client.get_or_create_collection("docs")
+
     path = f"temp/{file.filename}"
     with open(path, "wb") as f:
         f.write(await file.read())
@@ -53,6 +54,7 @@ async def upload_pdf(file: UploadFile = File(...)):
     store_embeddings(chunks, collection)
 
     return {"status": "ok", "chunks": len(chunks)}
+
 
 
 @app.get("/summary")
