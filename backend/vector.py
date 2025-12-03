@@ -6,29 +6,35 @@ import locale
 locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 
 
+
 import pdfplumber
 import fitz
 from PIL import Image
-import pytesseract
+import pytesseract  
+
+pytesseract.pytesseract.tesseract_cmd = r"D:\Temp Downloads\tesseract.exe"
 
 from chromadb import PersistentClient
 from langchain_ollama import OllamaEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
-# Use local DB stored in ./chroma_db
+
 client = PersistentClient(path="chroma_db")
-collection = client.get_or_create_collection("docs")
+embedder = OllamaEmbeddings(model="nomic-embed-text")
+
+COLLECTION_NAME = "docs"
+
+def get_collection():
+    return client.get_or_create_collection(COLLECTION_NAME)
 
 
-# OCR for scanned PDFs
 def extract_text_ocr(page):
     pix = page.get_pixmap(dpi=200)
     img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
     return pytesseract.image_to_string(img)
 
 
-# Extract text from any PDF
 def extract_text_from_pdf(path):
     text = ""
 
@@ -41,7 +47,7 @@ def extract_text_from_pdf(path):
     except:
         pass
 
-    # If pdfplumber failed (maybe image PDF), use PyMuPDF
+    
     if len(text.strip()) < 50:
         doc = fitz.open(path)
         for p in doc:
@@ -50,7 +56,7 @@ def extract_text_from_pdf(path):
     return text
 
 
-# Embedder
+
 embedder = OllamaEmbeddings(model="nomic-embed-text")
 
 
@@ -62,7 +68,7 @@ def create_chunks(text):
     return splitter.split_text(text)
 
 
-def store_embeddings(chunks):
+def store_embeddings(chunks,collection):
     for i, chunk in enumerate(chunks):
         emb = embedder.embed_query(chunk)
 
@@ -72,11 +78,12 @@ def store_embeddings(chunks):
             ids=[f"chunk-{i}"]
         )
 
-    # ❌ NO CLIENT.PERSIST — PersistentClient saves automatically
+  
 
 
 def query_similar(text, k=4):
     emb = embedder.embed_query(text)
+    collection = client.get_collection(COLLECTION_NAME)
     results = collection.query(
         query_embeddings=[emb],
         n_results=k
