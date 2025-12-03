@@ -18,14 +18,21 @@ from chromadb import PersistentClient
 from langchain_ollama import OllamaEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+client = None  # <-- FIX
 
+def set_client(c):
+    global client
+    client = c
 
-client = PersistentClient(path="chroma_db")
+# client = PersistentClient(path="chroma_db")
 embedder = OllamaEmbeddings(model="nomic-embed-text")
 
 COLLECTION_NAME = "docs"
 
+
+
 def get_collection():
+    global client
     return client.get_or_create_collection(COLLECTION_NAME)
 
 
@@ -82,10 +89,15 @@ def store_embeddings(chunks,collection):
 
 
 def query_similar(text, k=4):
+    if client is None:
+        raise Exception("Chroma client is not initialized. Upload a PDF first.")
+
     emb = embedder.embed_query(text)
     collection = client.get_collection(COLLECTION_NAME)
+
     results = collection.query(
         query_embeddings=[emb],
         n_results=k
     )
     return results
+
