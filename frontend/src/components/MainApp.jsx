@@ -12,6 +12,11 @@ import {
   AlertCircle,
   Settings,
   Bell,
+  X,
+  Eye,
+  MessageSquare,
+  Sparkles,
+  Mic,
 } from "lucide-react";
 
 const API_URL = "http://localhost:8000";
@@ -31,6 +36,8 @@ const MainApp = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [documentAnalyzed, setDocumentAnalyzed] = useState(false);
+  const [previewFile, setPreviewFile] = useState(null);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -172,69 +179,160 @@ const MainApp = () => {
       setMessages([]);
       setUploadedFiles([]);
       setDocumentAnalyzed(false);
+      setPreviewFile(null);
     }
   };
+
+  const suggestedPrompts = [
+    "Summarize the key points",
+    "What are the main topics?",
+    "Explain this in simple terms",
+    "Find specific information",
+    "Compare sections",
+    "Extract data points",
+    "Generate insights",
+    "Create a summary",
+  ];
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "#e8dcc6",
+        background: "#1a1d2e",
         display: "flex",
-        flexDirection: "column",
+        position: "relative",
       }}
     >
-      <nav
+      {/* Sidebar */}
+      <div
         style={{
-          background: "#d4c5ab",
-          padding: "0.75rem 1.5rem",
+          width: "3.5rem",
+          background: "#13151f",
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "column",
           alignItems: "center",
-          borderBottom: "1px solid #b8a687",
+          padding: "1rem 0",
+          gap: "1.5rem",
+          borderRight: "1px solid #2a2d3a",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <Bot size={28} style={{ color: "#6b7280" }} />
-          <h1
+        <div
+          style={{
+            width: "2rem",
+            height: "2rem",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            borderRadius: "0.5rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Sparkles size={18} style={{ color: "#ffffff" }} />
+        </div>
+
+        <button
+          onClick={() => setShowSidebar(!showSidebar)}
+          style={{
+            width: "2rem",
+            height: "2rem",
+            background: "#d97706",
+            border: "none",
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <MessageSquare size={18} style={{ color: "#ffffff" }} />
+        </button>
+
+        <Bell
+          size={20}
+          style={{ color: "#6b7280", cursor: "pointer", marginTop: "0.5rem" }}
+        />
+        <FileText size={20} style={{ color: "#6b7280", cursor: "pointer" }} />
+        <Upload size={20} style={{ color: "#6b7280", cursor: "pointer" }} />
+        <Settings size={20} style={{ color: "#6b7280", cursor: "pointer" }} />
+
+        <div style={{ flex: 1 }}></div>
+
+        <User
+          size={24}
+          style={{
+            color: "#6b7280",
+            cursor: "pointer",
+            padding: "0.25rem",
+            borderRadius: "50%",
+            border: "2px solid #6b7280",
+          }}
+        />
+      </div>
+
+      {/* Chat History Sidebar */}
+      {showSidebar && (
+        <div
+          style={{
+            width: "16rem",
+            background: "#13151f",
+            borderRight: "1px solid #2a2d3a",
+            padding: "1rem",
+            overflowY: "auto",
+          }}
+        >
+          <h3
             style={{
-              fontSize: "1.125rem",
+              color: "#9ca3af",
+              fontSize: "0.875rem",
               fontWeight: 600,
-              color: "#4b5563",
-              margin: 0,
+              marginBottom: "1rem",
             }}
           >
-            Ragbot
-          </h1>
+            Chat History
+          </h3>
+          {uploadedFiles.length > 0 && (
+            <div
+              style={{
+                background: "#1a1d2e",
+                padding: "0.75rem",
+                borderRadius: "0.5rem",
+                marginBottom: "0.5rem",
+                cursor: "pointer",
+              }}
+            >
+              <p
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "0.875rem",
+                  margin: 0,
+                }}
+              >
+                Current Session
+              </p>
+              <p
+                style={{
+                  color: "#6b7280",
+                  fontSize: "0.75rem",
+                  margin: "0.25rem 0 0 0",
+                }}
+              >
+                {uploadedFiles.length} document(s)
+              </p>
+            </div>
+          )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <Settings size={22} style={{ color: "#6b7280", cursor: "pointer" }} />
-          <Bell size={22} style={{ color: "#6b7280", cursor: "pointer" }} />
-          <User
-            size={28}
-            style={{
-              color: "#6b7280",
-              cursor: "pointer",
-              padding: "0.25rem",
-              borderRadius: "50%",
-              border: "2px solid #6b7280",
-            }}
-          />
-        </div>
-      </nav>
+      )}
 
+      {/* Main Content */}
       <div
         style={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          maxWidth: "60rem",
-          margin: "0 auto",
-          width: "100%",
-          padding: "1rem",
         }}
       >
-        {!documentAnalyzed && (
+        {!documentAnalyzed ? (
           <div
             style={{
               flex: 1,
@@ -247,40 +345,51 @@ const MainApp = () => {
           >
             <div
               style={{
-                background: "#ffffff",
-                borderRadius: "1rem",
-                padding: "2rem",
-                width: "100%",
-                maxWidth: "35rem",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                textAlign: "center",
+                marginBottom: "3rem",
               }}
             >
-              <h2
+              <h1
                 style={{
-                  fontSize: "1.25rem",
-                  fontWeight: 600,
-                  color: "#374151",
-                  marginBottom: "1.5rem",
-                  textAlign: "center",
+                  fontSize: "2.5rem",
+                  fontWeight: 400,
+                  color: "#e5e7eb",
+                  margin: "0 0 1rem 0",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "0.5rem",
+                  gap: "0.75rem",
                 }}
               >
-                <Upload size={24} style={{ color: "#6b7280" }} />
-                Upload Documents to Begin
-              </h2>
+                <span style={{ fontSize: "2rem" }}>✨</span>
+                Document Intelligence
+              </h1>
+              <p
+                style={{
+                  color: "#9ca3af",
+                  fontSize: "1.125rem",
+                  margin: 0,
+                }}
+              >
+                Upload your documents and start asking questions
+              </p>
+            </div>
 
+            <div
+              style={{
+                width: "100%",
+                maxWidth: "45rem",
+              }}
+            >
               {uploadError && (
                 <div
                   style={{
                     marginBottom: "1rem",
-                    padding: "0.75rem",
-                    background: "#fef2f2",
-                    border: "1px solid #fecaca",
-                    borderRadius: "0.5rem",
-                    color: "#dc2626",
+                    padding: "0.75rem 1rem",
+                    background: "#7f1d1d",
+                    border: "1px solid #991b1b",
+                    borderRadius: "0.75rem",
+                    color: "#fecaca",
                     fontSize: "0.875rem",
                     display: "flex",
                     alignItems: "center",
@@ -294,171 +403,239 @@ const MainApp = () => {
 
               <div
                 style={{
-                  border: "2px dashed #d1d5db",
-                  borderRadius: "0.75rem",
-                  padding: "3rem",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  background: "#f9fafb",
-                  transition: "border-color 0.2s",
+                  background: "#232530",
+                  borderRadius: "1.5rem",
+                  padding: "1.5rem",
+                  border: "1px solid #2a2d3a",
                 }}
               >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  onChange={handleFileUpload}
-                  accept=".txt,.pdf,.doc,.docx"
-                  multiple
-                  style={{ display: "none" }}
-                  id="file-upload"
-                  disabled={uploading}
-                />
-                <label
-                  htmlFor="file-upload"
-                  style={{ cursor: "pointer", display: "block" }}
+                <div
+                  style={{
+                    border: "2px dashed #4b5563",
+                    borderRadius: "1rem",
+                    padding: "3rem",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    background: "#1a1d2e",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = "#6b7280";
+                    e.currentTarget.style.background = "#1f2232";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#4b5563";
+                    e.currentTarget.style.background = "#1a1d2e";
+                  }}
                 >
-                  {uploading || isAnalyzing ? (
-                    <>
-                      <Loader2
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                          margin: "0 auto 1rem",
-                          color: "#6b7280",
-                          animation: "spin 1s linear infinite",
-                        }}
-                      />
-                      <p
-                        style={{
-                          color: "#4b5563",
-                          fontWeight: 500,
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        {isAnalyzing
-                          ? "Analyzing documents..."
-                          : "Uploading..."}
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <Upload
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                          margin: "0 auto 1rem",
-                          color: "#9ca3af",
-                        }}
-                      />
-                      <p
-                        style={{
-                          color: "#4b5563",
-                          fontWeight: 500,
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        Click to upload or drag and drop
-                      </p>
-                      <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>
-                        Supports: PDF, DOC, DOCX, TXT • Multiple files allowed
-                      </p>
-                    </>
-                  )}
-                </label>
-              </div>
-
-              {uploadedFiles.length > 0 && (
-                <div style={{ marginTop: "1rem" }}>
-                  <p
-                    style={{
-                      fontSize: "0.875rem",
-                      fontWeight: 500,
-                      color: "#4b5563",
-                      marginBottom: "0.5rem",
-                    }}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    onChange={handleFileUpload}
+                    accept=".txt,.pdf,.doc,.docx"
+                    multiple
+                    style={{ display: "none" }}
+                    id="file-upload"
+                    disabled={uploading}
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    style={{ cursor: "pointer", display: "block" }}
                   >
-                    Uploaded files:
-                  </p>
-                  <div
-                    style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}
-                  >
-                    {uploadedFiles.map((fileName, idx) => (
-                      <span
-                        key={idx}
-                        style={{
-                          padding: "0.25rem 0.75rem",
-                          background: "#d4c5ab",
-                          color: "#4b5563",
-                          fontSize: "0.875rem",
-                          borderRadius: "9999px",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.25rem",
-                        }}
-                      >
-                        <FileText size={14} />
-                        {fileName}
-                      </span>
-                    ))}
-                  </div>
+                    {uploading || isAnalyzing ? (
+                      <>
+                        <Loader2
+                          style={{
+                            width: "3rem",
+                            height: "3rem",
+                            margin: "0 auto 1rem",
+                            color: "#9ca3af",
+                            animation: "spin 1s linear infinite",
+                          }}
+                        />
+                        <p
+                          style={{
+                            color: "#e5e7eb",
+                            fontWeight: 500,
+                            marginBottom: "0.5rem",
+                            fontSize: "1.125rem",
+                          }}
+                        >
+                          {isAnalyzing
+                            ? "Analyzing documents..."
+                            : "Uploading..."}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <Upload
+                          style={{
+                            width: "3rem",
+                            height: "3rem",
+                            margin: "0 auto 1rem",
+                            color: "#6b7280",
+                          }}
+                        />
+                        <p
+                          style={{
+                            color: "#e5e7eb",
+                            fontWeight: 500,
+                            marginBottom: "0.5rem",
+                            fontSize: "1.125rem",
+                          }}
+                        >
+                          Drop files here or click to upload
+                        </p>
+                        <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>
+                          Supports PDF, DOC, DOCX, TXT • Multiple files allowed
+                        </p>
+                      </>
+                    )}
+                  </label>
                 </div>
-              )}
+
+                {uploadedFiles.length > 0 && (
+                  <div style={{ marginTop: "1.5rem" }}>
+                    <p
+                      style={{
+                        fontSize: "0.875rem",
+                        fontWeight: 500,
+                        color: "#9ca3af",
+                        marginBottom: "0.75rem",
+                      }}
+                    >
+                      Uploaded files:
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      {uploadedFiles.map((fileName, idx) => (
+                        <div
+                          key={idx}
+                          style={{
+                            padding: "0.75rem 1rem",
+                            background: "#1a1d2e",
+                            color: "#e5e7eb",
+                            fontSize: "0.875rem",
+                            borderRadius: "0.5rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            border: "1px solid #2a2d3a",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.5rem",
+                            }}
+                          >
+                            <FileText size={16} style={{ color: "#9ca3af" }} />
+                            {fileName}
+                          </div>
+                          <button
+                            onClick={() => setPreviewFile(fileName)}
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: "0.25rem",
+                            }}
+                          >
+                            <Eye size={16} style={{ color: "#6b7280" }} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        )}
-
-        {documentAnalyzed && (
-          <>
+        ) : (
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              maxWidth: "50rem",
+              margin: "0 auto",
+              width: "100%",
+              padding: "2rem 1rem",
+            }}
+          >
             {uploadedFiles.length > 0 && (
               <div
                 style={{
                   padding: "0.75rem 1rem",
-                  background: "#f3f4f6",
-                  borderRadius: "0.5rem",
+                  background: "#232530",
+                  borderRadius: "0.75rem",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  marginBottom: "1rem",
+                  marginBottom: "1.5rem",
+                  border: "1px solid #2a2d3a",
                 }}
               >
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.5rem",
+                    gap: "0.75rem",
                     flexWrap: "wrap",
                   }}
                 >
-                  <CheckCircle2 size={18} style={{ color: "#059669" }} />
+                  <CheckCircle2 size={18} style={{ color: "#10b981" }} />
                   <span
                     style={{
                       fontSize: "0.875rem",
                       fontWeight: 500,
-                      color: "#4b5563",
+                      color: "#9ca3af",
                     }}
                   >
                     Active documents:
                   </span>
                   {uploadedFiles.map((fileName, idx) => (
-                    <span
-                      key={idx}
-                      style={{
-                        padding: "0.25rem 0.5rem",
-                        background: "#d4c5ab",
-                        color: "#4b5563",
-                        fontSize: "0.75rem",
-                        borderRadius: "9999px",
-                      }}
-                    >
-                      {fileName}
-                    </span>
+                    <div key={idx} style={{ display: "flex", gap: "0.25rem" }}>
+                      <span
+                        style={{
+                          padding: "0.25rem 0.75rem",
+                          background: "#1a1d2e",
+                          color: "#e5e7eb",
+                          fontSize: "0.75rem",
+                          borderRadius: "9999px",
+                          border: "1px solid #2a2d3a",
+                        }}
+                      >
+                        {fileName}
+                      </span>
+                      <button
+                        onClick={() => setPreviewFile(fileName)}
+                        style={{
+                          background: "#1a1d2e",
+                          border: "1px solid #2a2d3a",
+                          borderRadius: "9999px",
+                          padding: "0.25rem 0.5rem",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Eye size={14} style={{ color: "#6b7280" }} />
+                      </button>
+                    </div>
                   ))}
                 </div>
                 <button
                   onClick={clearChat}
                   style={{
                     fontSize: "0.875rem",
-                    color: "#dc2626",
+                    color: "#ef4444",
                     background: "transparent",
                     border: "none",
                     cursor: "pointer",
@@ -468,7 +645,7 @@ const MainApp = () => {
                   }}
                 >
                   <Trash2 size={16} />
-                  Clear All
+                  Clear
                 </button>
               </div>
             )}
@@ -477,32 +654,66 @@ const MainApp = () => {
               style={{
                 flex: 1,
                 overflowY: "auto",
-                padding: "1rem",
                 display: "flex",
                 flexDirection: "column",
                 gap: "1rem",
+                marginBottom: "1.5rem",
               }}
             >
               {messages.length === 0 && (
                 <div
                   style={{
                     textAlign: "center",
-                    paddingTop: "3rem",
-                    paddingBottom: "3rem",
+                    paddingTop: "2rem",
                   }}
                 >
-                  <Bot
-                    size={64}
+                  <h2
                     style={{
-                      width: "4rem",
-                      height: "4rem",
-                      margin: "0 auto 1rem",
-                      color: "#9ca3af",
+                      color: "#e5e7eb",
+                      fontSize: "1.5rem",
+                      fontWeight: 400,
+                      marginBottom: "2rem",
                     }}
-                  />
-                  <p style={{ color: "#6b7280", fontSize: "1.125rem" }}>
-                    Start asking questions about your documents!
-                  </p>
+                  >
+                    What would you like to know?
+                  </h2>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(10rem, 1fr))",
+                      gap: "0.75rem",
+                      maxWidth: "40rem",
+                      margin: "0 auto",
+                    }}
+                  >
+                    {suggestedPrompts.map((prompt, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setInputMessage(prompt)}
+                        style={{
+                          padding: "0.75rem 1rem",
+                          background: "#232530",
+                          border: "1px solid #2a2d3a",
+                          borderRadius: "0.75rem",
+                          color: "#9ca3af",
+                          fontSize: "0.875rem",
+                          cursor: "pointer",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "#2a2d3a";
+                          e.currentTarget.style.color = "#e5e7eb";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "#232530";
+                          e.currentTarget.style.color = "#9ca3af";
+                        }}
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -517,19 +728,20 @@ const MainApp = () => {
                 >
                   <div
                     style={{
-                      maxWidth: "70%",
-                      padding: "0.875rem 1rem",
-                      borderRadius: "1rem",
+                      maxWidth: "75%",
+                      padding: "1rem 1.25rem",
+                      borderRadius: "1.25rem",
                       background:
                         msg.type === "user"
-                          ? "#a8b5a0"
+                          ? "#2563eb"
                           : msg.error
-                          ? "#f3a8a8"
-                          : "#b0c4d1",
-                      color: "#2d3748",
+                          ? "#7f1d1d"
+                          : "#232530",
+                      color: "#e5e7eb",
                       fontSize: "0.9375rem",
-                      lineHeight: 1.5,
-                      wordWrap: "break-word",
+                      lineHeight: 1.6,
+                      border:
+                        msg.type === "user" ? "none" : "1px solid #2a2d3a",
                     }}
                   >
                     <p
@@ -553,12 +765,13 @@ const MainApp = () => {
                 >
                   <div
                     style={{
-                      padding: "0.875rem 1rem",
-                      borderRadius: "1rem",
-                      background: "#b0c4d1",
+                      padding: "1rem 1.25rem",
+                      borderRadius: "1.25rem",
+                      background: "#232530",
+                      border: "1px solid #2a2d3a",
                     }}
                   >
-                    <div style={{ display: "flex", gap: "0.25rem" }}>
+                    <div style={{ display: "flex", gap: "0.375rem" }}>
                       <div
                         style={{
                           width: "0.5rem",
@@ -596,71 +809,67 @@ const MainApp = () => {
 
             <div
               style={{
-                padding: "1rem",
-                background: "#ffffff",
+                background: "#232530",
                 borderRadius: "1.5rem",
+                padding: "0.75rem 1rem",
                 display: "flex",
                 gap: "0.75rem",
                 alignItems: "center",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                border: "1px solid #2a2d3a",
               }}
             >
               <button
                 style={{
-                  padding: "0.625rem",
-                  background: "#9eb8c9",
+                  padding: "0.5rem",
+                  background: "transparent",
                   border: "none",
-                  borderRadius: "50%",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Upload size={20} style={{ color: "#374151" }} />
+                <Upload size={20} style={{ color: "#6b7280" }} />
               </button>
-              <button
-                style={{
-                  padding: "0.625rem",
-                  background: "#9eb8c9",
-                  border: "none",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <FileText size={20} style={{ color: "#374151" }} />
-              </button>
-              <textarea
+              <input
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Type a message..."
+                placeholder="Message AI..."
                 style={{
                   flex: 1,
-                  padding: "0.625rem 1rem",
+                  padding: "0.5rem 0",
                   border: "none",
-                  borderRadius: "1.5rem",
                   outline: "none",
-                  resize: "none",
                   fontFamily: "inherit",
                   fontSize: "0.9375rem",
                   background: "transparent",
-                  color: "#374151",
+                  color: "#e5e7eb",
                 }}
-                rows="1"
                 disabled={isSending}
               />
+              <button
+                style={{
+                  padding: "0.5rem",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Mic size={20} style={{ color: "#6b7280" }} />
+              </button>
               <button
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim() || isSending}
                 style={{
-                  padding: "0.625rem",
-                  background: "#9eb8c9",
+                  padding: "0.5rem 1rem",
+                  background: "#d97706",
+                  color: "#ffffff",
                   border: "none",
-                  borderRadius: "50%",
+                  borderRadius: "0.75rem",
                   cursor:
                     inputMessage.trim() && !isSending
                       ? "pointer"
@@ -670,24 +879,105 @@ const MainApp = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   transition: "all 0.2s",
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
                 }}
               >
                 {isSending ? (
                   <Loader2
-                    size={20}
+                    size={18}
                     style={{
-                      color: "#374151",
                       animation: "spin 1s linear infinite",
                     }}
                   />
                 ) : (
-                  <Send size={20} style={{ color: "#374151" }} />
+                  <Send size={18} />
                 )}
               </button>
             </div>
-          </>
+          </div>
         )}
       </div>
+
+      {/* Preview Modal */}
+      {previewFile && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "2rem",
+          }}
+          onClick={() => setPreviewFile(null)}
+        >
+          <div
+            style={{
+              background: "#1a1d2e",
+              borderRadius: "1rem",
+              padding: "2rem",
+              maxWidth: "50rem",
+              width: "100%",
+              maxHeight: "80vh",
+              overflow: "auto",
+              border: "1px solid #2a2d3a",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <h3
+                style={{
+                  color: "#e5e7eb",
+                  fontSize: "1.25rem",
+                  fontWeight: 600,
+                  margin: 0,
+                }}
+              >
+                {previewFile}
+              </h3>
+              <button
+                onClick={() => setPreviewFile(null)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "0.5rem",
+                }}
+              >
+                <X size={24} style={{ color: "#6b7280" }} />
+              </button>
+            </div>
+            <div
+              style={{
+                background: "#232530",
+                padding: "1.5rem",
+                borderRadius: "0.75rem",
+                color: "#9ca3af",
+                minHeight: "20rem",
+                border: "1px solid #2a2d3a",
+              }}
+            >
+              <p style={{ margin: 0 }}>
+                Document preview is not available. The content has been uploaded
+                and analyzed successfully.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes spin {
